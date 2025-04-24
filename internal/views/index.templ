@@ -11,6 +11,10 @@ templ Index(name string, count int) {
             data-indicator-loading
         >Increment</button>
         
+        <button 
+            data-on-click="@log('Inc', 4, 'extra')"
+        >Log args</button>
+        
         <div class="loading-indicator" data-class-hidden="!$loading">
             Loading...
         </div>

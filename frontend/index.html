@@ -4,10 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SSR POC - Wails, templ, and Datastar</title>
-    <!-- Load Datastar core -->
-    <script type="module" 
-      src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-beta.11/bundles/datastar.js"></script>
-    <!-- Load our custom Wails integration -->
+    <script type="module">
+      import { load, apply, PluginType } from './datastar-custom-plugins.js';
+
+      const LogAction = {
+        type: PluginType.Action,
+        name: 'log',
+        fn: (_ctx, method, ...args) => console.log(`[DS-log] ${method}`, ...args),
+      };
+
+      load(LogAction);
+      apply(document);
+    </script>
     <script src="./wails-action.js"></script>
     <style>
         body {
