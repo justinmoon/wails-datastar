@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SSR POC - Wails, templ, and Datastar</title>
+    <!-- Load Datastar core -->
     <script type="module" 
       src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-beta.11/bundles/datastar.js"></script>
+    <!-- Load our custom Wails integration -->
+    <script src="./wails-action.js"></script>
     <style>
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -62,36 +65,35 @@
     </div>
 
     <script>
-        // Define the incrementCount function that Datastar will call
-        window.incrementCount = async function() {
-            try {
-                // Show loading state manually
-                const loadingIndicator = document.querySelector('.loading-indicator');
-                if (loadingIndicator) {
-                    loadingIndicator.classList.remove('hidden');
-                }
-                
-                // Call our Go backend to increment the count
-                const count = await window.go.main.App.Inc();
-                
-                // Update the count element directly
-                const countElement = document.getElementById('count');
-                if (countElement) {
-                    countElement.textContent = count;
-                }
-                
-                // Hide loading state
-                if (loadingIndicator) {
-                    loadingIndicator.classList.add('hidden');
-                }
-                
-                return true; // Success
-            } catch (err) {
-                console.error('Error incrementing count:', err);
-                return false; // Error
+        // Setup Datastar loading indicator handling
+        document.addEventListener('datastar-loading-start', () => {
+            // Set Datastar's $loading signal
+            const loadingIndicator = document.querySelector('.loading-indicator');
+            if (loadingIndicator) {
+                loadingIndicator.classList.remove('hidden');
             }
-        };
-
+            
+            // Disable the button
+            const button = document.getElementById('incButton');
+            if (button) {
+                button.disabled = true;
+            }
+        });
+        
+        document.addEventListener('datastar-loading-end', () => {
+            // Clear Datastar's $loading signal
+            const loadingIndicator = document.querySelector('.loading-indicator');
+            if (loadingIndicator) {
+                loadingIndicator.classList.add('hidden');
+            }
+            
+            // Enable the button
+            const button = document.getElementById('incButton');
+            if (button) {
+                button.disabled = false;
+            }
+        });
+        
         // Wait for Wails to be ready
         window.addEventListener('load', async () => {
             try {
