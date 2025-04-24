@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>ssr-poc</title>
-    <script type="module"
-    src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-beta.11/bundles/datastar.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSR POC - Wails, templ, and Datastar</title>
+    <script type="module" 
+      src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-beta.11/bundles/datastar.js"></script>
     <style>
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -25,16 +25,89 @@
         h1 {
             color: #2563eb;
         }
+        button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        button:hover {
+            background-color: #1d4ed8;
+        }
+        .loading-indicator {
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background-color: #fef3c7;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
-<div id="app">
-    <div class="container">
-        <h1>Hello from Wails + templ + Datastar!</h1>
-        <p>Step 0 of our implementation plan is complete.</p>
-        <p>This is a static HTML page loaded through Wails with Datastar included.</p>
-        <p>Next, we'll implement server-side rendering with templ.</p>
+    <div id="app">
+        <div class="container">
+            <h1>Hello, World!</h1>
+            <p id="count">Loading...</p>
+            <button id="incButton">Increment</button>
+            
+            <div class="loading-indicator hidden">
+                Loading...
+            </div>
+        </div>
     </div>
-</div>
+
+    <script>
+        // Wait for Wails to be ready
+        window.addEventListener('load', async () => {
+            try {
+                // Call our Go backend to get the initial HTML
+                const html = await window.go.main.App.GetHTML();
+                document.getElementById('app').innerHTML = html;
+                
+                // Add click handler to the increment button after rendering the HTML
+                setupIncrementButton();
+            } catch (err) {
+                console.error('Error initializing app:', err);
+            }
+        });
+
+        function setupIncrementButton() {
+            // Find the button after it's been added to the DOM
+            const button = document.getElementById('incButton');
+            if (button) {
+                button.addEventListener('click', async () => {
+                    console.log('Button clicked');
+                    
+                    // Show loading state
+                    button.setAttribute('disabled', 'disabled');
+                    document.querySelector('.loading-indicator').classList.remove('hidden');
+                    
+                    try {
+                        // Get the updated count HTML fragment
+                        const countHtml = await window.go.main.App.Inc();
+                        console.log('Got updated count:', countHtml);
+                        
+                        // Update the DOM directly for now
+                        document.getElementById('count').outerHTML = countHtml;
+                    } catch (err) {
+                        console.error('Error incrementing count:', err);
+                    } finally {
+                        // Hide loading state
+                        button.removeAttribute('disabled');
+                        document.querySelector('.loading-indicator').classList.add('hidden');
+                    }
+                });
+                console.log('Increment button handler attached');
+            } else {
+                console.error('Could not find increment button');
+            }
+        }
+    </script>
 </body>
 </html>

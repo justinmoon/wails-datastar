@@ -1,0 +1,15 @@
+package views
+
+import "strconv"
+
+templ Index(name string, count int) {
+    <div class="container">
+        <h1>Hello, {name}!</h1>
+        <p id="count">{strconv.Itoa(count)}</p>
+        <button id="incButton">Increment</button>
+        
+        <div class="loading-indicator hidden">
+            Loading...
+        </div>
+    </div>
+}
