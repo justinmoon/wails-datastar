@@ -6,9 +6,12 @@ templ Index(name string, count int) {
     <div class="container">
         <h1>Hello, {name}!</h1>
         <p id="count">{strconv.Itoa(count)}</p>
-        <button id="incButton">Increment</button>
+        <button 
+            data-on-click="incrementCount()"
+            data-indicator-loading
+        >Increment</button>
         
-        <div class="loading-indicator hidden">
+        <div class="loading-indicator" data-class-hidden="!$loading">
             Loading...
         </div>
     </div>

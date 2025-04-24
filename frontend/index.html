@@ -37,6 +37,10 @@
         button:hover {
             background-color: #1d4ed8;
         }
+        button:disabled {
+            background-color: #93c5fd;
+            cursor: not-allowed;
+        }
         .loading-indicator {
             margin-top: 1rem;
             padding: 0.5rem;
@@ -52,17 +56,42 @@
 <body>
     <div id="app">
         <div class="container">
-            <h1>Hello, World!</h1>
-            <p id="count">Loading...</p>
-            <button id="incButton">Increment</button>
-            
-            <div class="loading-indicator hidden">
-                Loading...
-            </div>
+            <h1>Loading...</h1>
+            <p>Please wait...</p>
         </div>
     </div>
 
     <script>
+        // Define the incrementCount function that Datastar will call
+        window.incrementCount = async function() {
+            try {
+                // Show loading state manually
+                const loadingIndicator = document.querySelector('.loading-indicator');
+                if (loadingIndicator) {
+                    loadingIndicator.classList.remove('hidden');
+                }
+                
+                // Call our Go backend to increment the count
+                const count = await window.go.main.App.Inc();
+                
+                // Update the count element directly
+                const countElement = document.getElementById('count');
+                if (countElement) {
+                    countElement.textContent = count;
+                }
+                
+                // Hide loading state
+                if (loadingIndicator) {
+                    loadingIndicator.classList.add('hidden');
+                }
+                
+                return true; // Success
+            } catch (err) {
+                console.error('Error incrementing count:', err);
+                return false; // Error
+            }
+        };
+
         // Wait for Wails to be ready
         window.addEventListener('load', async () => {
             try {
@@ -70,44 +99,11 @@
                 const html = await window.go.main.App.GetHTML();
                 document.getElementById('app').innerHTML = html;
                 
-                // Add click handler to the increment button after rendering the HTML
-                setupIncrementButton();
+                console.log('App initialized with server-rendered HTML');
             } catch (err) {
                 console.error('Error initializing app:', err);
             }
         });
-
-        function setupIncrementButton() {
-            // Find the button after it's been added to the DOM
-            const button = document.getElementById('incButton');
-            if (button) {
-                button.addEventListener('click', async () => {
-                    console.log('Button clicked');
-                    
-                    // Show loading state
-                    button.setAttribute('disabled', 'disabled');
-                    document.querySelector('.loading-indicator').classList.remove('hidden');
-                    
-                    try {
-                        // Get the updated count HTML fragment
-                        const countHtml = await window.go.main.App.Inc();
-                        console.log('Got updated count:', countHtml);
-                        
-                        // Update the DOM directly for now
-                        document.getElementById('count').outerHTML = countHtml;
-                    } catch (err) {
-                        console.error('Error incrementing count:', err);
-                    } finally {
-                        // Hide loading state
-                        button.removeAttribute('disabled');
-                        document.querySelector('.loading-indicator').classList.add('hidden');
-                    }
-                });
-                console.log('Increment button handler attached');
-            } else {
-                console.error('Could not find increment button');
-            }
-        }
     </script>
 </body>
 </html>

@@ -38,15 +38,10 @@ func (a *App) GetHTML() string {
 	return buf.String()
 }
 
-// Inc increments the counter and returns the updated HTML fragment
+// Inc increments the counter and returns the updated value
 func (a *App) Inc() string {
 	a.count++
-	
-	// Render Count component to string
-	var buf bytes.Buffer
-	_ = views.Count(a.count).Render(context.Background(), &buf)
-	
-	return buf.String()
+	return strconv.Itoa(a.count)
 }
 
 // GetCount returns the current count
