@@ -4,10 +4,129 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SSR POC - Wails, templ, and Datastar</title>
-    <!-- Load Datastar core -->
-    <script type="module" 
-      src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-beta.11/bundles/datastar.js"></script>
-    <!-- Load our custom Wails integration -->
+    <!-- Define import map for Datastar -->
+    <script type="importmap">
+    {
+        "imports": {
+          "datastar": "https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-beta.11/bundles/datastar.js"
+        }
+    }
+    </script>
+    
+    <!-- Load Datastar core and initialize -->
+    <script type="module">
+      import { load, apply } from 'datastar';
+      
+      // Define our IPC plugin here for better timing control
+      const IPC = {
+        type: 3,  // Plugin type 3 for action
+        name: 'ipc',
+        
+        fn: async (ctx, methodName, { selector = '#count', mode = 'outer' } = {}) => {
+          console.log('IPC plugin called in main module with:', { methodName, selector, mode });
+          const { el } = ctx;
+          
+          try {
+            // Set loading state
+            document.dispatchEvent(new CustomEvent('datastar-loading-start'));
+            
+            // Call the Wails Go method
+            console.log('Calling Go method:', methodName);
+            const html = await window.go.main.App[methodName]();
+            console.log('Received HTML response:', html);
+            
+            // Find target element(s)
+            const targets = selector
+              ? document.querySelectorAll(selector)
+              : [el];
+            
+            console.log('Found targets:', targets.length);
+            
+            // Update each target
+            targets.forEach(target => {
+              console.log('Updating target with mode:', mode);
+              switch (mode) {
+                case 'inner': target.innerHTML = html; break;
+                case 'before': target.insertAdjacentHTML('beforebegin', html); break;
+                case 'after': target.insertAdjacentHTML('afterend', html); break;
+                case 'append': target.insertAdjacentHTML('beforeend', html); break;
+                case 'prepend': target.insertAdjacentHTML('afterbegin', html); break;
+                default: target.outerHTML = html; break;
+              }
+            });
+            
+          } catch (err) {
+            console.error('Error in IPC plugin:', err);
+            throw err;
+          } finally {
+            // Clear loading state
+            document.dispatchEvent(new CustomEvent('datastar-loading-end'));
+          }
+        }
+      };
+      
+      // Initialize Datastar when Wails app is fully loaded
+      window.addEventListener('load', async () => {
+        console.log('Window loaded, waiting for app initialization...');
+        
+        // First wait for the app HTML to be loaded by Wails
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Register our plugin first
+        console.log('Registering IPC plugin from main script...');
+        load(IPC);
+        console.log('IPC plugin loaded');
+        
+        // Apply Datastar to the document
+        console.log('Applying Datastar to the document...');
+        apply(document);
+        console.log('Datastar applied');
+        
+        // Set up a click interceptor as a fallback
+        console.log('Setting up fallback click handler for data-ipc...');
+        document.querySelectorAll('[data-ipc]').forEach(el => {
+          console.log('Found element with data-ipc:', el);
+          el.addEventListener('click', async (e) => {
+            console.log('Direct click on data-ipc element');
+            const methodName = el.getAttribute('data-ipc');
+            if (methodName) {
+              console.log('Calling method directly:', methodName);
+              
+              try {
+                // Show loading state
+                document.dispatchEvent(new CustomEvent('datastar-loading-start'));
+                
+                // Call the Go method
+                const html = await window.go.main.App[methodName]();
+                console.log('Method returned HTML:', html);
+                
+                // Update the target element
+                const target = document.querySelector('#count');
+                if (target) {
+                  target.outerHTML = html;
+                  console.log('Updated target element');
+                }
+              } catch (err) {
+                console.error('Error calling method:', err);
+              } finally {
+                // Hide loading state
+                document.dispatchEvent(new CustomEvent('datastar-loading-end'));
+              }
+            }
+          });
+        });
+      });
+      
+      // Add a direct click handler for debugging
+      document.addEventListener('click', (e) => {
+        if (e.target.hasAttribute('data-ipc')) {
+          console.log('Main script debug: Button with data-ipc clicked:', e.target);
+          console.log('Main script debug: data-ipc value:', e.target.getAttribute('data-ipc'));
+        }
+      });
+    </script>
+    
+    <!-- Load our custom Wails integration (legacy) -->
     <script src="./wails-action.js"></script>
     <style>
         body {

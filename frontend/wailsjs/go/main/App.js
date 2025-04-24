@@ -13,3 +13,7 @@ export function GetHTML() {
 export function Inc() {
   return window['go']['main']['App']['Inc']();
 }
+
+export function IncHTML() {
+  return window['go']['main']['App']['IncHTML']();
+}

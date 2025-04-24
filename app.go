@@ -38,13 +38,29 @@ func (a *App) GetHTML() string {
 	return buf.String()
 }
 
-// Inc increments the counter and returns the updated value
+// Inc increments the counter and returns the updated HTML fragment
 func (a *App) Inc() string {
 	a.count++
-	return strconv.Itoa(a.count)
+	
+	// Render Count component to string
+	var buf bytes.Buffer
+	_ = views.Count(a.count).Render(context.Background(), &buf)
+	
+	return buf.String()
 }
 
 // GetCount returns the current count
 func (a *App) GetCount() string {
 	return strconv.Itoa(a.count)
+}
+
+// IncHTML increments the counter and returns the rendered HTML fragment
+func (a *App) IncHTML() (string, error) {
+	runtime.LogInfo(a.ctx, "IncHTML method called")
+	a.count++
+	var buf bytes.Buffer
+	_ = views.Count(a.count).Render(context.Background(), &buf)
+	result := buf.String()
+	runtime.LogInfo(a.ctx, "IncHTML returning: " + result)
+	return result, nil
 }
