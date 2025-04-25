@@ -1,30 +1,6 @@
 package views
 
 templ Index(count int, count2 int) {
-    <div class="container">
-        @Count(count)
-
-        <div id="deleteMe" class="delete-box">
-            I disappear when "Remove fragment" fires!
-        </div>
-
-        <button 
-            id="incButton"
-            data-on-click="@ipc('IncHTML')"
-            data-indicator-loading
-        >
-            Increment
-        </button>
-
-        <button 
-            id="rmButton"
-            data-on-click="@ipc('RemoveDivHTML')"
-            data-indicator-loading
-        >
-            Remove fragment
-        </button>
-    </div>
-
-    <!-- new signals container -->
-    @Signals(count2)
+    @CounterFragments(count)
+    @CounterSignals(count2)
 }

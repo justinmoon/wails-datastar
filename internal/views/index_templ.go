@@ -29,19 +29,11 @@ func Index(count int, count2 int) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"container\">")
+		templ_7745c5c3_Err = CounterFragments(count).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Count(count).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div id=\"deleteMe\" class=\"delete-box\">I disappear when \"Remove fragment\" fires!</div><button id=\"incButton\" data-on-click=\"@ipc(&#39;IncHTML&#39;)\" data-indicator-loading>Increment</button> <button id=\"rmButton\" data-on-click=\"@ipc(&#39;RemoveDivHTML&#39;)\" data-indicator-loading>Remove fragment</button></div><!-- new signals container -->")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = Signals(count2).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = CounterSignals(count2).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
