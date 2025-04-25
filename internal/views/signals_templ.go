@@ -8,7 +8,7 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-func Index(count int, count2 int) templ.Component {
+func Signals(count2 int) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -29,19 +29,7 @@ func Index(count int, count2 int) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"container\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = Count(count).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div id=\"deleteMe\" class=\"delete-box\">I disappear when \"Remove fragment\" fires!</div><button id=\"incButton\" data-on-click=\"@ipc(&#39;IncHTML&#39;)\" data-indicator-loading>Increment</button> <button id=\"rmButton\" data-on-click=\"@ipc(&#39;RemoveDivHTML&#39;)\" data-indicator-loading>Remove fragment</button></div><!-- new signals container -->")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = Signals(count2).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"signalsContainer\" data-signals-count2=\"0\"><p data-text=\"$count2\"></p><button data-on-click=\"@ipc(&#39;IncrementSignals&#39;)\">＋</button> <button data-on-click=\"@ipc(&#39;DecrementSignals&#39;)\">－</button> <button data-on-click=\"@ipc(&#39;RemoveSignalsUI&#39;)\">Remove fragment</button></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

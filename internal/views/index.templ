@@ -1,6 +1,6 @@
 package views
 
-templ Index(count int) {
+templ Index(count int, count2 int) {
     <div class="container">
         @Count(count)
 
@@ -24,4 +24,7 @@ templ Index(count int) {
             Remove fragment
         </button>
     </div>
+
+    <!-- new signals container -->
+    @Signals(count2)
 }

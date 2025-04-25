@@ -96,7 +96,7 @@ type MergeSignalsOption func(map[string]string)
 // MergeSignals adds a merge-signals event to the IPC envelope
 func (b *IpcBuilder) MergeSignals(jsonData []byte, opts ...MergeSignalsOption) {
 	args := map[string]string{
-		"json": string(jsonData),
+		"signals": string(jsonData),
 	}
 
 	// Apply all options

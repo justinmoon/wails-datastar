@@ -66,8 +66,9 @@ export const IPC = {
       const signalEvent = events.find(e => e.type === 'datastar-merge-signals');
       if (signalEvent && signalEvent.args && signalEvent.args.json) {
         // Return the parsed signal data as the action result
-        console.log('sse signals')
-        return JSON.parse(signalEvent.args.json);
+        const signalData = JSON.parse(signalEvent.args.json);
+        console.log('sse signals data:', signalData);
+        return signalData;
       }
       
       return null;

@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"strconv"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -13,14 +14,16 @@ import (
 
 // App struct
 type App struct {
-	ctx   context.Context
-	count int
+	ctx          context.Context
+	fragmentCount int     // existing counter using fragment updates
+	signalCount  int     // new counter using signal updates
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{
-		count: 0,
+		fragmentCount: 0,
+		signalCount: 0,
 	}
 }
 
@@ -35,39 +38,34 @@ func (a *App) startup(ctx context.Context) {
 // GetHTML returns the rendered HTML from our templ components
 func (a *App) GetHTML() string {
 	var buf bytes.Buffer
-	_ = views.Index(a.count).Render(context.Background(), &buf)
+	_ = views.Index(a.fragmentCount, a.signalCount).Render(context.Background(), &buf)
 	return buf.String()
 }
 
 // Inc increments the counter and returns the updated value
 func (a *App) Increment() int {
-	a.count++
-	return a.count
+	a.fragmentCount++
+	return a.fragmentCount
 }
 
 // GetCount returns the current count
 func (a *App) GetCount() string {
-	return strconv.Itoa(a.count)
+	return strconv.Itoa(a.fragmentCount)
 }
 
 // IncHTML increments the count and returns HTML fragment and signal updates as IPC events
 func (a *App) IncHTML() ([]byte, error) {
-	a.count++
+	a.fragmentCount++
 
 	// Render the updated count HTML
 	var buf bytes.Buffer
-	_ = views.Count(a.count).Render(context.Background(), &buf)
+	_ = views.Count(a.fragmentCount).Render(context.Background(), &buf)
 
 	// Create IPC builder
 	ipc := datastar.NewIpc()
 
 	// Add fragment update
 	ipc.MergeFragments(buf.String())
-
-	// Add signal update
-	// ipc.MergeSignals(
-	// 	[]byte(fmt.Sprintf(`{"count":%d}`, a.count)),
-	// )
 
 	// Return JSON-encoded IPC envelope
 	jsonData, err := ipc.JSON()
@@ -94,5 +92,57 @@ func (a *App) RemoveDivHTML() ([]byte, error) {
 	}
 	
 	runtime.LogInfof(a.ctx, "IPC JSON response: %s", string(jsonData))
+	return jsonData, nil
+}
+
+// Helper function that returns an IPC envelope containing only merge-signals
+func (a *App) buildSignalsIPC() ([]byte, error) {
+	ipc := datastar.NewIpc()
+	
+	// Create the signal data with the current count2 value
+	// Note: Using root level "count2" to match the $count2 in the template
+	sigJSON, _ := json.Marshal(map[string]any{
+		"count2": a.signalCount,
+	})
+	
+	// Add merge-signals event to the IPC envelope
+	ipc.MergeSignals(sigJSON)
+	
+	// Return JSON-encoded IPC envelope
+	jsonData, err := ipc.JSON()
+	if err != nil {
+		runtime.LogErrorf(a.ctx, "Error marshaling signals IPC JSON: %v", err)
+		return nil, err
+	}
+	
+	runtime.LogInfof(a.ctx, "Signals IPC JSON response: %s", string(jsonData))
+	return jsonData, nil
+}
+
+// IncrementSignals increments the signal counter and returns a merge-signals event
+func (a *App) IncrementSignals() ([]byte, error) {
+	a.signalCount++
+	return a.buildSignalsIPC()
+}
+
+// DecrementSignals decrements the signal counter and returns a merge-signals event
+func (a *App) DecrementSignals() ([]byte, error) {
+	a.signalCount--
+	return a.buildSignalsIPC()
+}
+
+// RemoveSignalsUI removes the signals UI container via remove-fragments
+func (a *App) RemoveSignalsUI() ([]byte, error) {
+	ipc := datastar.NewIpc()
+	ipc.RemoveFragments("#signalsContainer")
+	
+	// Return JSON-encoded IPC envelope
+	jsonData, err := ipc.JSON()
+	if err != nil {
+		runtime.LogErrorf(a.ctx, "Error marshaling remove IPC JSON: %v", err)
+		return nil, err
+	}
+	
+	runtime.LogInfof(a.ctx, "Remove IPC JSON response: %s", string(jsonData))
 	return jsonData, nil
 }
