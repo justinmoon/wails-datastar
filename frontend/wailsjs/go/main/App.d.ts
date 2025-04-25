@@ -5,4 +5,4 @@ export function GetCount():Promise<string>;
 
 export function GetHTML():Promise<string>;
 
-export function Inc():Promise<string>;
+export function Increment():Promise<number>;

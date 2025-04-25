@@ -26,7 +26,7 @@ func NewApp() *App {
 // startup is called when the app starts
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-	
+
 	// Log status
 	runtime.LogInfo(a.ctx, "Application started")
 }
@@ -34,14 +34,14 @@ func (a *App) startup(ctx context.Context) {
 // GetHTML returns the rendered HTML from our templ components
 func (a *App) GetHTML() string {
 	var buf bytes.Buffer
-	_ = views.Index("World", a.count).Render(context.Background(), &buf)
+	_ = views.Index(a.count).Render(context.Background(), &buf)
 	return buf.String()
 }
 
 // Inc increments the counter and returns the updated value
-func (a *App) Inc() string {
+func (a *App) Increment() int {
 	a.count++
-	return strconv.Itoa(a.count)
+	return a.count
 }
 
 // GetCount returns the current count

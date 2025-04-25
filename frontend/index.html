@@ -21,10 +21,20 @@
             fn: (_ctx, method, ...args) => console.log(`[DS-log] ${method}`, ...args),
         };
 
-        load(LogAction);
+        const IpcAction = {
+            type: 3,
+            name: 'ipc',
+            fn: async (_ctx, method, ...args) => {
+              const result = await window.go.main.App[method](...args);
+              console.log(result)
+              return result;
+            },
+        };
+
+        load(LogAction, IpcAction);
 </script>
 
-    <script src="./wails-action.js"></script>
+    <!-- <script src="./wails-action.js"></script> -->
     <style>
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
