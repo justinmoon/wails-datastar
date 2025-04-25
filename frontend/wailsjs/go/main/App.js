@@ -10,6 +10,10 @@ export function GetHTML() {
   return window['go']['main']['App']['GetHTML']();
 }
 
+export function IncHTML() {
+  return window['go']['main']['App']['IncHTML']();
+}
+
 export function Increment() {
   return window['go']['main']['App']['Increment']();
 }

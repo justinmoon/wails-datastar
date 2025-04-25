@@ -12,26 +12,18 @@
 }
 </script>
 <script type="module">
-        import { load } from 'datastar'
+        import { load, apply } from 'datastar'
+        import { IPC, setupIpcPushEvents } from './ipc-action.js'
+        // import { LogAction } from './log-action.js'
 
-        const LogAction = {
-            // type: PluginType.Action,
-            type: 3, // don't know how to import PluginAction
-            name: 'log',
-            fn: (_ctx, method, ...args) => console.log(`[DS-log] ${method}`, ...args),
-        };
-
-        const IpcAction = {
-            type: 3,
-            name: 'ipc',
-            fn: async (_ctx, method, ...args) => {
-              const result = await window.go.main.App[method](...args);
-              console.log(result)
-              return result;
-            },
-        };
-
-        load(LogAction, IpcAction);
+        // Register both plugins
+        load(IPC);
+        
+        // Set up the push event listener for unsolicited IPC events
+        setupIpcPushEvents();
+        
+        // Apply to the current DOM
+        apply();
 </script>
 
     <!-- <script src="./wails-action.js"></script> -->

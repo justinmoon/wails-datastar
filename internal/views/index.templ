@@ -1,8 +1,14 @@
 package views
 
 templ Index(count int) {
-    <div class="container" data-signals-count="0">
-        <div data-text="$count"></div>
-        <button data-on-click="$count = @ipc('Increment').then((result) => $count = result)">Increment</button>
+    <div class="container">
+        @Count(count)
+        <button 
+            id="incButton"
+            data-on-click="@ipc('IncHTML')"
+            data-indicator-loading
+        >
+            Increment
+        </button>
     </div>
 }
