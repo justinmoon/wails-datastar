@@ -8,3 +8,5 @@ export function GetHTML():Promise<string>;
 export function IncHTML():Promise<Array<number>>;
 
 export function Increment():Promise<number>;
+
+export function RemoveDivHTML():Promise<Array<number>>;

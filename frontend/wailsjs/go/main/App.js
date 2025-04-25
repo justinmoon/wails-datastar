@@ -17,3 +17,7 @@ export function IncHTML() {
 export function Increment() {
   return window['go']['main']['App']['Increment']();
 }
+
+export function RemoveDivHTML() {
+  return window['go']['main']['App']['RemoveDivHTML']();
+}

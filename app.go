@@ -79,3 +79,20 @@ func (a *App) IncHTML() ([]byte, error) {
 	runtime.LogInfof(a.ctx, "IPC JSON response: %s", string(jsonData))
 	return jsonData, nil
 }
+
+// RemoveDivHTML removes the #deleteMe div via Datastar remove-fragments
+func (a *App) RemoveDivHTML() ([]byte, error) {
+	ipc := datastar.NewIpc()
+	// Remove both the demo div and the button itself with a single selector
+	ipc.RemoveFragments("#deleteMe, #rmButton") // CSS selector can target multiple elements
+	
+	// Return JSON-encoded IPC envelope
+	jsonData, err := ipc.JSON()
+	if err != nil {
+		runtime.LogErrorf(a.ctx, "Error marshaling IPC JSON: %v", err)
+		return nil, err
+	}
+	
+	runtime.LogInfof(a.ctx, "IPC JSON response: %s", string(jsonData))
+	return jsonData, nil
+}

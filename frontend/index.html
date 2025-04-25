@@ -72,6 +72,12 @@
         .hidden {
             display: none;
         }
+        .delete-box {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+        }
     </style>
 </head>
 <body>
@@ -91,10 +97,15 @@
                 loadingIndicator.classList.remove('hidden');
             }
             
-            // Disable the button
-            const button = document.getElementById('incButton');
-            if (button) {
-                button.disabled = true;
+            // Disable the buttons
+            const incButton = document.getElementById('incButton');
+            if (incButton) {
+                incButton.disabled = true;
+            }
+            
+            const rmButton = document.getElementById('rmButton');
+            if (rmButton) {
+                rmButton.disabled = true;
             }
         });
         
@@ -105,10 +116,15 @@
                 loadingIndicator.classList.add('hidden');
             }
             
-            // Enable the button
-            const button = document.getElementById('incButton');
-            if (button) {
-                button.disabled = false;
+            // Enable the buttons
+            const incButton = document.getElementById('incButton');
+            if (incButton) {
+                incButton.disabled = false;
+            }
+            
+            const rmButton = document.getElementById('rmButton');
+            if (rmButton) {
+                rmButton.disabled = false;
             }
         });
         

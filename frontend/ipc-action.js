@@ -63,12 +63,12 @@ export const IPC = {
       }
       
       // Find signal data in the events if present
-      // const signalEvent = events.find(e => e.type === 'datastar-merge-signals');
-      // if (signalEvent && signalEvent.args && signalEvent.args.json) {
-      //   // Return the parsed signal data as the action result
-      //   console.log('sse signals')
-      //   return JSON.parse(signalEvent.args.json);
-      // }
+      const signalEvent = events.find(e => e.type === 'datastar-merge-signals');
+      if (signalEvent && signalEvent.args && signalEvent.args.json) {
+        // Return the parsed signal data as the action result
+        console.log('sse signals')
+        return JSON.parse(signalEvent.args.json);
+      }
       
       return null;
     } catch (e) {

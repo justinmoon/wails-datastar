@@ -37,7 +37,7 @@ func Index(count int) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<button id=\"incButton\" data-on-click=\"@ipc(&#39;IncHTML&#39;)\" data-indicator-loading>Increment</button></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div id=\"deleteMe\" class=\"delete-box\">I disappear when \"Remove fragment\" fires!</div><button id=\"incButton\" data-on-click=\"@ipc(&#39;IncHTML&#39;)\" data-indicator-loading>Increment</button> <button id=\"rmButton\" data-on-click=\"@ipc(&#39;RemoveDivHTML&#39;)\" data-indicator-loading>Remove fragment</button></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
