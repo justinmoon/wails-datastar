@@ -1,3 +1,4 @@
 - When I ask you to implement something a certain way, never attempt to hardcode a workaround that doesn't progress towards a real solution. sometimes hardcoding etc is fine if it moves us to a real solution, but way too often you do this just to get the concrete thing i asked you to do to seem to work -- but it's actually hard-coded and broken.
 - Don't make defaults of variables or other things that will just add bugs.
 - CRITICAL: When I ask you to implement a specific approach (like merge-signals), NEVER suggest an alternative approach (like switching to merge-fragments) just because you encounter difficulty. Stick with the requested approach and help debug it properly. If the original approach has issues, help fix those issues rather than suggesting workarounds that don't use the technology I explicitly asked to implement.
+- Never delete html id's unless  you are certain they aren't not used by mergeFragments and removeFragments datastar mechanics.
