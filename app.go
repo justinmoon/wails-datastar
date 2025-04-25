@@ -171,3 +171,10 @@ func (a *App) RemoveSignalsUI() ([]byte, error) {
 	runtime.LogInfof(a.ctx, "Remove IPC JSON response: %s", string(jsonData))
 	return jsonData, nil
 }
+
+// sends an execute-script event that pops an alert
+func (a *App) ExecuteScript() ([]byte, error) {
+	ipc := datastar.NewIpc()
+	ipc.ExecuteScript("console.log(\"hey, stop clicking me\")")
+	return ipc.JSON()
+}

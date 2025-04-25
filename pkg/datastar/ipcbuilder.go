@@ -2,6 +2,8 @@ package datastar
 
 import (
 	"encoding/json"
+	"strconv"
+	"strings"
 )
 
 // EventType represents the type of an IPC event
@@ -153,10 +155,20 @@ func (b *IpcBuilder) RemoveSignals(path string, opts ...RemoveSignalsOption) {
 // ExecuteScriptOption represents options for executing scripts
 type ExecuteScriptOption func(map[string]string)
 
+// WithAttributes adds HTML attributes to the script tag
+func WithAttributes(attrs ...string) ExecuteScriptOption {
+	return func(m map[string]string) { m["attributes"] = strings.Join(attrs, "\n") }
+}
+
+// WithAutoRemove sets whether the script should be auto-removed after execution
+func WithAutoRemove(b bool) ExecuteScriptOption {
+	return func(m map[string]string) { m["autoRemove"] = strconv.FormatBool(b) }
+}
+
 // ExecuteScript adds an execute-script event to the IPC envelope
-func (b *IpcBuilder) ExecuteScript(code string, opts ...ExecuteScriptOption) {
+func (b *IpcBuilder) ExecuteScript(script string, opts ...ExecuteScriptOption) {
 	args := map[string]string{
-		"code": code,
+		"script": script,
 	}
 
 	// Apply all options

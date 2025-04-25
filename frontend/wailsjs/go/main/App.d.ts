@@ -5,6 +5,8 @@ export function DecrementFragments():Promise<Array<number>>;
 
 export function DecrementSignals():Promise<Array<number>>;
 
+export function ExecuteScript():Promise<Array<number>>;
+
 export function GetCount():Promise<string>;
 
 export function GetHTML():Promise<string>;

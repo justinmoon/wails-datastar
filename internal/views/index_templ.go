@@ -37,6 +37,10 @@ func Index(count int, count2 int) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<button id=\"annoyButton\" data-on-click=\"@ipc(&#39;ExecuteScript&#39;)\">console.log()</button>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		return nil
 	})
 }

@@ -153,8 +153,6 @@
                 // Call our Go backend to get the initial HTML
                 const html = await window.go.main.App.GetHTML();
                 document.getElementById('app').innerHTML = html;
-                
-                console.log('App initialized with server-rendered HTML');
             } catch (err) {
                 console.error('Error initializing app:', err);
             }

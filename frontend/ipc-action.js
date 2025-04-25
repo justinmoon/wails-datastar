@@ -39,26 +39,21 @@ export const IPC = {
    */
   async fn(ctx, method, ...args) {
     const elId = ctx.el.id;
-    console.log('elid', elId);
     
     // Dispatch the started event
-        console.log('starting');
     dispatchSSE(STARTED, elId, {});
     
     try {
       // Call the Wails method
       const raw = await window.go.main.App[method](...args);
-      console.log("Raw response:", raw);
       
       // Wails automatically converts []byte to Base64-encoded string
       // Decode it and parse as JSON
       const decoded = typeof raw === 'string' ? atob(raw) : raw;
       const events = JSON.parse(decoded);
-      console.log("events", events);
       
       // Dispatch each event to Datastar
       for (const { type, args } of events) {
-        console.log('sse fragment', type, args);
         dispatchSSE(type, elId, args);
       }
       
@@ -67,7 +62,6 @@ export const IPC = {
       if (signalEvent && signalEvent.args && signalEvent.args.json) {
         // Return the parsed signal data as the action result
         const signalData = JSON.parse(signalEvent.args.json);
-        console.log('sse signals data:', signalData);
         return signalData;
       }
       

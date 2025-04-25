@@ -3,4 +3,10 @@ package views
 templ Index(count int, count2 int) {
     @CounterFragments(count)
     @CounterSignals(count2)
+    <button
+        id="annoyButton"
+        data-on-click="@ipc('ExecuteScript')"
+    >
+        console.log()
+    </button>
 }

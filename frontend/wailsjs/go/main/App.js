@@ -10,6 +10,10 @@ export function DecrementSignals() {
   return window['go']['main']['App']['DecrementSignals']();
 }
 
+export function ExecuteScript() {
+  return window['go']['main']['App']['ExecuteScript']();
+}
+
 export function GetCount() {
   return window['go']['main']['App']['GetCount']();
 }
